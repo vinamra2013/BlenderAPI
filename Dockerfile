@@ -8,7 +8,14 @@ WORKDIR /app
 # Copy the requirements file
 COPY requirements.txt .
 
-RUN apt-get update && apt-get install -y python3 python3-pip blender
+# Set environment variables to make apt-get non-interactive
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Etc/UTC
+
+RUN apt-get update && apt-get install -y \
+    python3 python3-pip blender tzdata \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 
 # Install Python dependencies inside the virtual environment
