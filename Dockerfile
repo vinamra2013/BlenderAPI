@@ -5,16 +5,16 @@ FROM blendergrid/blender:latest
 WORKDIR /app
 
 # Copy the requirements file
-COPY requirements.txt /app/requirements.txt
+COPY requirements.txt requirements.txt
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r /app/requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Create directories for uploads and outputs
 RUN mkdir -p /data/uploads /data/outputs
 
 # Copy the FastAPI application
-COPY main.py /app/main.py
+COPY main.py /app
 
 # Expose the API port
 EXPOSE 8003

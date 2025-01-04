@@ -21,7 +21,7 @@ echo "Starting new container: $CONTAINER_NAME..."
 sudo docker run -d --name $CONTAINER_NAME \
   -v "$(pwd)/data/uploads:/data/uploads" \
   -v "$(pwd)/data/outputs:/data/outputs" \
-  -p 8000:8000 \
+  -p 8003:8003 \
   $IMAGE_NAME
 
-echo "Container started. API is accessible at http://localhost:8000"
+echo "Container started. API is accessible at http://localhost:8003"
