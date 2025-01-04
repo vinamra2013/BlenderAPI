@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y python3-pip
 RUN pip3 install --no-cache-dir -r requirements.txt --break-system-packages
 
 # Ensure venv is used for subsequent commands
-ENV PATH="/app/venv/bin:$PATH"
+# ENV PATH="/app/venv/bin:$PATH"
 
 # Create directories for uploads and outputs
 RUN mkdir -p /data/uploads /data/outputs
