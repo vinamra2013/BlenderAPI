@@ -6,7 +6,7 @@ CONTAINER_NAME="blender_renderer"
 DOCKERFILE_PATH="./Dockerfile"
 
 # Check if a container with the specified name is running
-if docker ps -q -f name=$CONTAINER_NAME; then
+if sudo docker ps -q -f name=$CONTAINER_NAME; then
   echo "Stopping and removing existing container: $CONTAINER_NAME..."
   sudo docker stop $CONTAINER_NAME  # Stop the container by name
   sudo docker rm $CONTAINER_NAME    # Remove the container by name
