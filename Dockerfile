@@ -7,7 +7,7 @@ WORKDIR /app
 # Copy the requirements file
 COPY requirements.txt .
 
-RUN apt-get update && apt-get install -y python3-pip
+RUN apt-get update && apt-get install -y python3-pip python3-virtualenv
 
 # Install virtualenv
 RUN pip install virtualenv
