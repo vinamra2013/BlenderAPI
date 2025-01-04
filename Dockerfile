@@ -14,10 +14,10 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 RUN mkdir -p /data/uploads /data/outputs
 
 # Copy the FastAPI application
-COPY app /app
+COPY main.py /app/main.py
 
 # Expose the API port
-EXPOSE 8000
+EXPOSE 8003
 
 # Run FastAPI with Uvicorn
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8003"]
