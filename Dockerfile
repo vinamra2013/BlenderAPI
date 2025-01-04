@@ -24,7 +24,7 @@ EXPOSE 8003
 # RUN uvicorn --version
 RUN which uvicorn  # Debugging step to verify where uvicorn is installed
 # Debugging step to see the path
-RUN ls -l /usr/local/bin/uvicorn  # List the uvicorn file details
+RUN python3 -m uvicorn --version
 
 # Run FastAPI with Uvicorn
 CMD ["/usr/bin/uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8003"]
