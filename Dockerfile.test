@@ -1,0 +1,18 @@
+# Use the BlenderGrid Blender image as the base
+FROM blendergrid/blender:latest
+
+# Install necessary tools for debugging
+RUN apt-get update && apt-get install -y \
+    python3 python3-pip bash vim curl
+
+# Set working directory
+WORKDIR /app
+
+# Copy application files (optional for context)
+COPY . .
+
+# Expose any ports needed (optional)
+EXPOSE 8003
+
+# Set Bash as the default command
+CMD ["/bin/bash"]
