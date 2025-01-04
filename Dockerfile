@@ -11,8 +11,8 @@ RUN apt-get update && apt-get install -y python3-pip
 
 
 # Install Python dependencies inside the virtual environment
-RUN pip3 install --no-cache-dir -r requirements.txt --break-system-packages
-
+# RUN pip3 install --no-cache-dir -r requirements.txt --break-system-packages
+RUN pip3 install fastapi uvicorn --break-system-packages
 # Create directories for uploads and outputs
 RUN mkdir -p /data/uploads /data/outputs
 
