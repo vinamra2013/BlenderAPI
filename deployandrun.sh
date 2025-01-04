@@ -8,17 +8,17 @@ DOCKERFILE_PATH="./Dockerfile"
 # Check if a container with the specified name is running
 if docker ps -q -f name=$CONTAINER_NAME; then
   echo "Stopping and removing existing container: $CONTAINER_NAME..."
-  docker stop $CONTAINER_NAME  # Stop the container by name
-  docker rm $CONTAINER_NAME    # Remove the container by name
+  sudo docker stop $CONTAINER_NAME  # Stop the container by name
+  sudo docker rm $CONTAINER_NAME    # Remove the container by name
 fi
 
 # Build the new Docker image
 echo "Building Docker image: $IMAGE_NAME..."
-docker build -t $IMAGE_NAME -f $DOCKERFILE_PATH .
+sudo docker build -t $IMAGE_NAME -f $DOCKERFILE_PATH .
 
 # Run the container
 echo "Starting new container: $CONTAINER_NAME..."
-docker run -d --name $CONTAINER_NAME \
+sudo docker run -d --name $CONTAINER_NAME \
   -v "$(pwd)/data/uploads:/data/uploads" \
   -v "$(pwd)/data/outputs:/data/outputs" \
   -p 8000:8000 \
