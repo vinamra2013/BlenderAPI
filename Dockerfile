@@ -12,10 +12,25 @@ COPY requirements.txt .
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
 
-RUN apt-get update && apt-get install -y \
-    python3.11 python3-pip blender tzdata \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+# Install necessary dependencies, tools, and Python 3.11
+RUN apt-get update && \
+    apt-get install -y software-properties-common && \
+    add-apt-repository -y ppa:deadsnakes/ppa && \
+    apt-get update && \
+    apt-get install -y python3.11 python3.11-distutils curl blender tzdata && \
+    curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create symbolic links for default Python and pip
+RUN ln -sf /usr/bin/python3.11 /usr/bin/python && \
+    ln -sf /usr/bin/python3.11 /usr/bin/python3 && \
+    ln -sf /usr/local/bin/pip /usr/bin/pip
+
+# RUN apt-get update && apt-get install -y \
+#     python3.11 python3-pip blender tzdata \
+#     && apt-get clean \
+#     && rm -rf /var/lib/apt/lists/*
 
 
 # Install Python dependencies inside the virtual environment --break-system-packages
