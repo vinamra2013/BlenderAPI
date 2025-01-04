@@ -1,7 +1,7 @@
 from fastapi import FastAPI, UploadFile, Form, HTTPException
 from fastapi.responses import FileResponse
-import bpy
 from pathlib import Path
+import subprocess
 import logging
 
 # Initialize FastAPI
@@ -28,7 +28,7 @@ async def render_animation(
 ):
     logger.info("Starting animation render process...")
 
-    # Save uploaded .blend file
+    # Save the uploaded .blend file
     blend_path = UPLOAD_DIR / file.filename
     async with open(blend_path, "wb") as f:
         content = await file.read()
@@ -36,36 +36,25 @@ async def render_animation(
 
     logger.info(f"Blend file saved to: {blend_path}")
 
-    # Load the .blend file in Blender
-    try:
-        bpy.ops.wm.open_mainfile(filepath=str(blend_path))
-        logger.info(f"Successfully loaded blend file: {blend_path}")
-    except Exception as e:
-        logger.error(f"Failed to load blend file: {e}")
-        raise HTTPException(status_code=500, detail=f"Failed to load .blend file: {str(e)}")
-
-    # Set render output settings for animation
+    # Define the output path
     output_path = OUTPUT_DIR / output_name
-    bpy.context.scene.render.filepath = str(output_path)
-    bpy.context.scene.render.image_settings.file_format = "FFMPEG"
-    bpy.context.scene.render.ffmpeg.format = "MPEG4"
-    bpy.context.scene.render.ffmpeg.codec = "H264"
-    bpy.context.scene.render.ffmpeg.constant_rate_factor = "MEDIUM"
-    bpy.context.scene.render.ffmpeg.ffmpeg_preset = "GOOD"
 
-    # Set frame range
-    bpy.context.scene.frame_start = start_frame
-    bpy.context.scene.frame_end = end_frame
+    # Build the Blender CLI command
+    cmd = [
+        "blender",
+        "-b",  # Run Blender in background mode
+        str(blend_path),
+        "-o", str(output_path.with_suffix("")),  # Output path without extension
+        "-s", str(start_frame),  # Start frame
+        "-e", str(end_frame),  # End frame
+        "-a",  # Render animation
+    ]
 
-    # Set the render engine and device (GPU)
-    bpy.context.scene.render.engine = 'CYCLES'
-    bpy.context.scene.cycles.device = 'GPU'
-
-    # Render the animation
+    # Run the Blender CLI command
     try:
-        logger.info(f"Rendering animation from frame {start_frame} to {end_frame}...")
-        bpy.ops.render.render(animation=True)
-
+        logger.info(f"Running Blender CLI command: {' '.join(cmd)}")
+        subprocess.run(cmd, check=True)
+        
         # Check if the output file exists
         if not output_path.exists():
             logger.error("Render failed: output file not found.")
@@ -79,9 +68,9 @@ async def render_animation(
             media_type="video/mp4",
             filename=output_name,
         )
-    except Exception as e:
-        logger.error(f"Render failed: {e}")
-        raise HTTPException(status_code=500, detail=f"Render failed: {str(e)}")
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Blender command failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Blender command failed: {str(e)}")
 
 @app.post("/render-image", response_class=FileResponse)
 async def render_image(
@@ -99,27 +88,23 @@ async def render_image(
 
     logger.info(f"Blend file saved to: {blend_path}")
 
-    # Load the .blend file in Blender
-    try:
-        bpy.ops.wm.open_mainfile(filepath=str(blend_path))
-        logger.info(f"Successfully loaded blend file: {blend_path}")
-    except Exception as e:
-        logger.error(f"Failed to load blend file: {e}")
-        raise HTTPException(status_code=500, detail=f"Failed to load .blend file: {str(e)}")
-
-    # Set render output settings
+    # Define the output path
     output_path = OUTPUT_DIR / output_name
-    bpy.context.scene.render.filepath = str(output_path)
-    bpy.context.scene.render.image_settings.file_format = "PNG"
 
-    # Set the frame to render
-    bpy.context.scene.frame_set(frame)
+    # Build the Blender CLI command
+    cmd = [
+        "blender",
+        "-b",  # Run Blender in background mode
+        str(blend_path),
+        "-o", str(output_path.with_suffix("")),  # Output path without extension
+        "-f", str(frame),  # Specific frame to render
+    ]
 
-    # Render the image
+    # Run the Blender CLI command
     try:
-        logger.info(f"Rendering image for frame {frame}...")
-        bpy.ops.render.render(write_still=True)
-
+        logger.info(f"Running Blender CLI command: {' '.join(cmd)}")
+        subprocess.run(cmd, check=True)
+        
         # Check if the output file exists
         if not output_path.exists():
             logger.error("Render failed: output file not found.")
@@ -133,6 +118,6 @@ async def render_image(
             media_type="image/png",
             filename=output_name,
         )
-    except Exception as e:
-        logger.error(f"Render failed: {e}")
-        raise HTTPException(status_code=500, detail=f"Render failed: {str(e)}")
+    except subprocess.CalledProcessError as e:
+        logger.error(f"Blender command failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Blender command failed: {str(e)}")
