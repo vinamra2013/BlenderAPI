@@ -27,4 +27,5 @@ RUN which uvicorn  # Debugging step to verify where uvicorn is installed
 RUN python3 -m uvicorn --version
 
 # Run FastAPI with Uvicorn
-CMD ["/usr/bin/uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8003"]
+# CMD ["/usr/bin/uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8003"]
+CMD ["python3", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8003"]
