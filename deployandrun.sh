@@ -26,3 +26,13 @@ sudo docker run -d --name $CONTAINER_NAME \
   $IMAGE_NAME
 
 echo "Container started. API is accessible at http://localhost:8003"
+
+
+
+# Wait for a few seconds to ensure the container starts
+echo "Waiting for the container to start..."
+sleep 5
+
+# Fetch and display logs from the container
+echo "Fetching logs from the container..."
+docker logs -f $CONTAINER_NAME
