@@ -5,7 +5,7 @@ FROM blendergrid/blender:latest
 WORKDIR /app
 
 # Copy the requirements file
-COPY requirements.txt requirements.txt
+COPY requirements.txt .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN mkdir -p /data/uploads /data/outputs
 
 # Copy the FastAPI application
-COPY main.py /app
+COPY . .
 
 # Expose the API port
 EXPOSE 8003
