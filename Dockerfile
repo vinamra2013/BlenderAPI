@@ -9,8 +9,9 @@ COPY requirements.txt .
 
 RUN apt-get update && apt-get install -y python3-pip python3-virtualenv
 
+
 # Create and activate a virtual environment
-RUN python -m virtualenv venv
+RUN python3 -m virtualenv venv
 
 # Install Python dependencies inside the virtual environment
 RUN ./venv/bin/pip install --no-cache-dir -r requirements.txt
