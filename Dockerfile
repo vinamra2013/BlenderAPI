@@ -29,4 +29,4 @@ RUN python3 -m uvicorn --version
 # Run FastAPI with Uvicorn
 # CMD ["/usr/bin/uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8003"]
 # CMD ["/usr/bin/python3", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8003"]
-CMD ["/usr/bin/bash"]
+CMD ["/bin/bash"]
