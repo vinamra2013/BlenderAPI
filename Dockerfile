@@ -24,4 +24,4 @@ EXPOSE 8003
 # RUN uvicorn --version
 RUN which uvicorn  # Debugging step to verify where uvicorn is installed
 # Run FastAPI with Uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8003"]
+CMD ["/usr/local/bin/uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8003"]
