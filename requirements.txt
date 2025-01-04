@@ -1,3 +1,5 @@
 fastapi
 uvicorn
 bpy
+libsm6
+libxext6
