@@ -13,14 +13,14 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Etc/UTC
 
 RUN apt-get update && apt-get install -y \
-    python3 python3-pip blender tzdata \
+    python3.11 python3-pip blender tzdata \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 
-# Install Python dependencies inside the virtual environment
-# RUN pip3 install --no-cache-dir -r requirements.txt --break-system-packages
-RUN pip3 install fastapi uvicorn 
+# Install Python dependencies inside the virtual environment --break-system-packages
+RUN pip3 install --no-cache-dir -r requirements.txt 
+# RUN pip3 install fastapi uvicorn 
 
 # Create directories for uploads and outputs
 RUN mkdir -p /data/uploads /data/outputs
@@ -32,6 +32,6 @@ COPY . .
 EXPOSE 8003
 
 # Run FastAPI with Uvicorn
-CMD ["/usr/bin/uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8003"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8003"]
 # CMD ["/usr/bin/python3", "-m", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8003"]
 # CMD ["/bin/bash"]
