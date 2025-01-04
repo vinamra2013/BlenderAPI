@@ -35,4 +35,4 @@ sleep 5
 
 # Fetch and display logs from the container
 echo "Fetching logs from the container..."
-docker logs -f $CONTAINER_NAME
+sudo docker logs -f $CONTAINER_NAME
