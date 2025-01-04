@@ -1,4 +1,5 @@
 #!/bin/bash
+git pull
 
 # Variables
 IMAGE_NAME="blender_fastapi"
