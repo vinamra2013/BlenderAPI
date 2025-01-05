@@ -82,8 +82,8 @@ async def render_image_preloaded(
 
     # Define paths and validate extensions
     blend_path = Path("/data/blender") / file_name
-    output_extension = Path(output_name).suffix.lstrip(".").upper()  # Extract and validate extension
-    valid_formats = {"PNG", "JPEG", "TIFF", "BMP", "OPEN_EXR", "HDR"}
+    output_extension = Path(output_name).suffix.lstrip(".").upper()
+    valid_formats = {"PNG", "JPEG", "TIFF", "BMP", "OPEN_EXR", "HDR", "MP4", "AVI"}
     if output_extension not in valid_formats:
         logger.error(f"Unsupported file format: {output_extension}")
         raise HTTPException(
@@ -91,7 +91,7 @@ async def render_image_preloaded(
             detail=f"Unsupported file format. Supported formats: {', '.join(valid_formats)}"
         )
 
-    # Set the output path (without extension, for Blender)
+    # Set the output path (base path for Blender rendering)
     output_base = OUTPUT_DIR / Path(output_name).stem
     if not OUTPUT_DIR.exists():
         OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -104,16 +104,23 @@ async def render_image_preloaded(
     logger.info(f"Using preloaded blend file: {blend_path}")
 
     # Construct the Blender command
+    python_script = f"""
+import bpy
+scene = bpy.context.scene
+scene.frame_start = {frame}
+scene.frame_end = {frame}
+scene.render.image_settings.file_format = '{output_extension}'
+scene.render.filepath = '{output_base}'
+"""
     blender_command = [
         "blender",
-        "--background",  # Run Blender in background mode
-        str(blend_path),  # Path to the .blend file
-        "--render-output", str(output_base),  # Base output path without file extension
-        "--render-frame", str(frame),  # Frame to render
-        "--enable-autoexec",  # Allow auto-execution of trusted scripts
-        "--engine", "CYCLES",  # Use Cycles render engine
+        "--background",
+        str(blend_path),
+        "--enable-autoexec",
         "--python-expr",
-        f"import bpy; bpy.context.scene.render.image_settings.file_format='{output_extension}'"
+        python_script,
+        "--render-frame",
+        str(frame),
     ]
 
     try:
@@ -123,19 +130,23 @@ async def render_image_preloaded(
         logger.error(f"Render failed: {e}")
         raise HTTPException(status_code=500, detail="Render failed")
 
-    # Search for the output file (e.g., /data/outputs/rendered_image0001.png)
-    rendered_file = list(OUTPUT_DIR.glob(f"{Path(output_name).stem}*{output_extension.lower()}"))
+    # Handle potential output file patterns
+    if output_extension in {"MP4", "AVI"}:
+        rendered_file = list(OUTPUT_DIR.glob(f"{Path(output_name).stem}-*.{output_extension.lower()}"))
+    else:
+        rendered_file = list(OUTPUT_DIR.glob(f"{Path(output_name).stem}*.{output_extension.lower()}"))
+
     if not rendered_file:
         logger.error("Render failed: output file not found.")
         raise HTTPException(status_code=500, detail="Render failed: output file not found.")
 
-    # Use the first match (should only be one file)
     final_output = rendered_file[0]
-    logger.info(f"Image rendered successfully: {final_output}")
+    logger.info(f"Render completed successfully: {final_output}")
 
-    # Return the rendered image file
+    # Return the rendered file
     return FileResponse(
         path=final_output,
-        media_type=f"image/{output_extension.lower()}",
+        media_type=f"video/{output_extension.lower()}" if output_extension in {"MP4", "AVI"} else f"image/{output_extension.lower()}",
         filename=output_name,
     )
+
