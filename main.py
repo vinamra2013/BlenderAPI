@@ -76,13 +76,25 @@ async def render_animation(
 async def render_image_preloaded(
     file_name: str = Form(...),  # Blender file name already on the server
     frame: int = Form(1),  # Frame to render
-    output_name: str = Form("rendered_image.png"),
+    output_name: str = Form("rendered_image.png"),  # Output file name
 ):
     logger.info("Starting image render process with preloaded Blender file...")
 
-    # Define paths
+    # Define paths and validate extensions
     blend_path = Path("/data/blender") / file_name
-    output_path = OUTPUT_DIR / output_name
+    output_extension = Path(output_name).suffix.lstrip(".").upper()  # Extract and validate extension
+    valid_formats = {"PNG", "JPEG", "TIFF", "BMP", "OPEN_EXR", "HDR"}
+    if output_extension not in valid_formats:
+        logger.error(f"Unsupported file format: {output_extension}")
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unsupported file format. Supported formats: {', '.join(valid_formats)}"
+        )
+
+    # Set the output path (without extension, for Blender)
+    output_base = OUTPUT_DIR / Path(output_name).stem
+    if not OUTPUT_DIR.exists():
+        OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     # Validate the .blend file exists
     if not blend_path.exists():
@@ -96,10 +108,12 @@ async def render_image_preloaded(
         "blender",
         "--background",  # Run Blender in background mode
         str(blend_path),  # Path to the .blend file
-        "--render-output", str(output_path.with_suffix('')),  # Output path without file extension
-        "--render-frame", str(frame),  # Frame to render,
-        "--enable-autoexec", # This flag enables the automatic execution of scripts that are marked as "trusted" within the blend file,
+        "--render-output", str(output_base),  # Base output path without file extension
+        "--render-frame", str(frame),  # Frame to render
+        "--enable-autoexec",  # Allow auto-execution of trusted scripts
         "--engine", "CYCLES",  # Use Cycles render engine
+        "--python-expr",
+        f"import bpy; bpy.context.scene.render.image_settings.file_format='{output_extension}'"
     ]
 
     try:
@@ -109,16 +123,19 @@ async def render_image_preloaded(
         logger.error(f"Render failed: {e}")
         raise HTTPException(status_code=500, detail="Render failed")
 
-    # Check if the output file exists
-    if not output_path.with_suffix(".png").exists():
+    # Search for the output file (e.g., /data/outputs/rendered_image0001.png)
+    rendered_file = list(OUTPUT_DIR.glob(f"{Path(output_name).stem}*{output_extension.lower()}"))
+    if not rendered_file:
         logger.error("Render failed: output file not found.")
         raise HTTPException(status_code=500, detail="Render failed: output file not found.")
 
-    logger.info(f"Image rendered successfully: {output_path.with_suffix('.png')}")
+    # Use the first match (should only be one file)
+    final_output = rendered_file[0]
+    logger.info(f"Image rendered successfully: {final_output}")
 
     # Return the rendered image file
     return FileResponse(
-        path=output_path.with_suffix(".png"),
-        media_type="image/png",
+        path=final_output,
+        media_type=f"image/{output_extension.lower()}",
         filename=output_name,
     )
