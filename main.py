@@ -97,7 +97,8 @@ async def render_image_preloaded(
         "--background",  # Run Blender in background mode
         str(blend_path),  # Path to the .blend file
         "--render-output", str(output_path.with_suffix('')),  # Output path without file extension
-        "--render-frame", str(frame),  # Frame to render
+        "--render-frame", str(frame),  # Frame to render,
+        "--enable-autoexec", # This flag enables the automatic execution of scripts that are marked as "trusted" within the blend file,
         "--engine", "CYCLES",  # Use Cycles render engine
     ]
 
