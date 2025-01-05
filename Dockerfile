@@ -37,6 +37,11 @@ RUN flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.
 # Install Blender from Flathub
 RUN flatpak install -y flathub org.blender.Blender
 
+# Add Flatpak binaries to PATH
+ENV PATH="/var/lib/flatpak/exports/bin:$PATH"
+
+# Create an alias for Blender
+RUN echo "alias blender='flatpak run org.blender.Blender'" >> /etc/bash.bashrc
 # RUN apt-get update && apt-get install -y \
 #     python3.11 python3-pip blender tzdata \
 #     && apt-get clean \
