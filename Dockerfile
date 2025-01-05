@@ -30,7 +30,7 @@ RUN ln -sf /usr/bin/python3.11 /usr/bin/python && \
 
 # Set Blender version and download URL
 ENV BLENDER_VERSION=4.2.2
-ENV BLENDER_URL=https://ftp.halifax.rwth-aachen.de/blender/release/Blender4.3/blender-${BLENDER_VERSION}-linux-x64.tar.xz
+ENV BLENDER_URL=https://ftp.halifax.rwth-aachen.de/blender/release/Blender4.2/blender-${BLENDER_VERSION}-linux-x64.tar.xz
 
 # Download and extract Blender
 RUN mkdir /opt/blender && \
