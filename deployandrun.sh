@@ -22,6 +22,7 @@ echo "Starting new container: $CONTAINER_NAME..."
 sudo docker run -d --name $CONTAINER_NAME \
   -v "$(pwd)/data/uploads:/data/uploads" \
   -v "$(pwd)/data/outputs:/data/outputs" \
+  -v "$(pwd)/data/blender:/data/blender" \
   -p 8003:8003 \
   $IMAGE_NAME
 
