@@ -34,7 +34,7 @@ ENV BLENDER_URL=https://ftp.halifax.rwth-aachen.de/blender/release/Blender4.3/bl
 
 # Download and extract Blender
 RUN mkdir /opt/blender && \
-    wget -q $BLENDER_URL -O /tmp/blender.tar.xz && \
+    curl -sSL $BLENDER_URL -o /tmp/blender.tar.xz && \
     tar xf /tmp/blender.tar.xz -C /opt/blender --strip-components=1 && \
     rm /tmp/blender.tar.xz
 
