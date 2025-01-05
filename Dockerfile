@@ -17,7 +17,7 @@ RUN apt-get update && \
     apt-get install -y software-properties-common && \
     add-apt-repository -y ppa:deadsnakes/ppa && \
     apt-get update && \
-    apt-get install -y python3.11 python3.11-distutils curl blender tzdata && \
+    apt-get install -y snapd python3.11 python3.11-distutils curl tzdata && \
     curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
@@ -26,6 +26,8 @@ RUN apt-get update && \
 RUN ln -sf /usr/bin/python3.11 /usr/bin/python && \
     ln -sf /usr/bin/python3.11 /usr/bin/python3 && \
     ln -sf /usr/local/bin/pip /usr/bin/pip
+
+RUN snap install blender --classic
 
 # RUN apt-get update && apt-get install -y \
 #     python3.11 python3-pip blender tzdata \
