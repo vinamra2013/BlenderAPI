@@ -27,10 +27,15 @@ RUN ln -sf /usr/bin/python3.11 /usr/bin/python && \
     ln -sf /usr/bin/python3.11 /usr/bin/python3 && \
     ln -sf /usr/local/bin/pip /usr/bin/pip
 
-# Enable snapd (not recommended)
-RUN apt-get update && apt-get install -y snapd \
-    && systemctl enable snapd \
-    && snap install blender --classic
+# Install Flatpak dependencies
+RUN apt-get update && apt-get install -y flatpak software-properties-common \
+    && apt-get clean
+
+# Add Flathub repository
+RUN flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+# Install Blender from Flathub
+RUN flatpak install -y flathub org.blender.Blender
 
 # RUN apt-get update && apt-get install -y \
 #     python3.11 python3-pip blender tzdata \
