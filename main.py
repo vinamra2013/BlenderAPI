@@ -30,7 +30,11 @@ async def render_animation(
 
     # Define paths and validate extensions
     blend_path = Path("/data/blender") / file_name
+    logger.debug(f"Blend file path set to: {blend_path}")
+
     output_extension = Path(output_name).suffix.lstrip(".").upper()
+    logger.debug(f"Output extension resolved to: {output_extension}")
+
     valid_formats = {"PNG", "JPEG", "TIFF", "BMP", "OPEN_EXR", "HDR", "MP4", "AVI"}
     if output_extension not in valid_formats:
         logger.error(f"Unsupported file format: {output_extension}")
@@ -41,8 +45,11 @@ async def render_animation(
 
     # Set the output path (base path for Blender rendering)
     output_base = OUTPUT_DIR / Path(output_name).stem
+    logger.debug(f"Output base path set to: {output_base}")
+
     if not OUTPUT_DIR.exists():
         OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+        logger.info(f"Created output directory: {OUTPUT_DIR}")
 
     # Validate the .blend file exists
     if not blend_path.exists():
@@ -56,19 +63,14 @@ async def render_animation(
 import bpy
 
 # Set render frame range
+print(f"Start Frame: {start_frame}, End Frame: {end_frame or bpy.context.scene.frame_end}")
 bpy.context.scene.frame_start = {start_frame}
 bpy.context.scene.frame_end = {end_frame or bpy.context.scene.frame_end}
 
 # Configure render settings
-bpy.context.scene.render.image_settings.file_format = 'FFMPEG'  # Set to FFMPEG for video formats
-bpy.context.scene.render.ffmpeg.format = 'MPEG4'  # Specify video codec (e.g., MPEG4 for MP4)
-bpy.context.scene.render.ffmpeg.codec = 'H264'  # Specify encoding codec
-bpy.context.scene.render.ffmpeg.constant_rate_factor = 'MEDIUM'  # Adjust quality
-bpy.context.scene.render.ffmpeg.audio_codec = 'AAC'  # Set audio codec if needed
-
-
-bpy.context.scene.render.use_file_extension = False
-bpy.context.scene.render.filepath = f"{output_base}.mp4"
+bpy.context.scene.render.image_settings.file_format = '{output_extension}'
+bpy.context.scene.render.filepath = '{output_base}'
+print(f"Render file path: {bpy.context.scene.render.filepath}")
 
 bpy.context.scene.render.resolution_x = 1920
 bpy.context.scene.render.resolution_y = 1080
@@ -76,11 +78,15 @@ bpy.context.scene.render.resolution_y = 1080
 # Configure Cycles-specific settings
 bpy.context.scene.cycles.samples = 200
 bpy.context.scene.cycles.adaptive_threshold = 0.01
+print("Render settings configured.")
 
 # Render the animation
 bpy.ops.render.render(animation=True)
+print("Animation render completed.")
 """
     script_path = OUTPUT_DIR / "render_script.py"
+    logger.debug(f"Writing temporary Blender script to: {script_path}")
+
     with script_path.open("w") as script_file:
         script_file.write(script_content)
 
@@ -100,11 +106,13 @@ bpy.ops.render.render(animation=True)
         raise HTTPException(status_code=500, detail="Render failed")
 
     # Handle potential output file patterns
+    logger.debug(f"Looking for output files with base: {Path(output_name).stem}")
     if output_extension in {"MP4", "AVI"}:
         rendered_file = list(OUTPUT_DIR.glob(f"{Path(output_name).stem}-*.{output_extension.lower()}"))
     else:
         rendered_file = list(OUTPUT_DIR.glob(f"{Path(output_name).stem}*.{output_extension.lower()}"))
 
+    logger.debug(f"Rendered files found: {rendered_file}")
     if not rendered_file:
         logger.error("Render failed: output file not found.")
         raise HTTPException(status_code=500, detail="Render failed: output file not found.")
@@ -118,6 +126,7 @@ bpy.ops.render.render(animation=True)
         media_type=f"video/{output_extension.lower()}" if output_extension in {"MP4", "AVI"} else f"image/{output_extension.lower()}",
         filename=output_name,
     )
+
 
 @app.post("/render-image", response_class=FileResponse)
 async def render_image_preloaded(
