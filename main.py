@@ -66,7 +66,10 @@ bpy.context.scene.render.ffmpeg.codec = 'H264'  # Specify encoding codec
 bpy.context.scene.render.ffmpeg.constant_rate_factor = 'MEDIUM'  # Adjust quality
 bpy.context.scene.render.ffmpeg.audio_codec = 'AAC'  # Set audio codec if needed
 
-bpy.context.scene.render.filepath = '{output_base}'
+
+bpy.context.scene.render.use_file_extension = False
+bpy.context.scene.render.filepath = f"{output_base}.mp4"
+
 bpy.context.scene.render.resolution_x = 1920
 bpy.context.scene.render.resolution_y = 1080
 
