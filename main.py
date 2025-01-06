@@ -68,8 +68,12 @@ bpy.context.scene.frame_start = {start_frame}
 bpy.context.scene.frame_end = {end_frame} or bpy.context.scene.frame_end
 
 # Configure render settings
-bpy.context.scene.render.image_settings.file_format = '{output_extension}'
 bpy.context.scene.render.filepath = '{output_base}'
+
+bpy.context.scene.render.image_settings.file_format = 'FFMPEG'
+bpy.context.scene.render.ffmpeg.format = 'MPEG4'
+bpy.context.scene.render.ffmpeg.codec = 'H264'
+bpy.context.scene.render.use_file_extension = False
 
 bpy.context.scene.render.resolution_x = 1920
 bpy.context.scene.render.resolution_y = 1080
