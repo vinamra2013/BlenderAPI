@@ -60,7 +60,12 @@ bpy.context.scene.frame_start = {start_frame}
 bpy.context.scene.frame_end = {end_frame or bpy.context.scene.frame_end}
 
 # Configure render settings
-bpy.context.scene.render.image_settings.file_format = '{output_extension}'
+bpy.context.scene.render.image_settings.file_format = 'FFMPEG'  # Set to FFMPEG for video formats
+bpy.context.scene.render.ffmpeg.format = 'MPEG4'  # Specify video codec (e.g., MPEG4 for MP4)
+bpy.context.scene.render.ffmpeg.codec = 'H264'  # Specify encoding codec
+bpy.context.scene.render.ffmpeg.constant_rate_factor = 'MEDIUM'  # Adjust quality
+bpy.context.scene.render.ffmpeg.audio_codec = 'AAC'  # Set audio codec if needed
+
 bpy.context.scene.render.filepath = '{output_base}'
 bpy.context.scene.render.resolution_x = 1920
 bpy.context.scene.render.resolution_y = 1080
