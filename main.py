@@ -63,14 +63,13 @@ async def render_animation(
 import bpy
 
 # Set render frame range
-print(f"Start Frame: {start_frame}, End Frame: {end_frame or bpy.context.scene.frame_end}")
+print(f"Start Frame: {start_frame}, End Frame: {end_frame} or bpy.context.scene.frame_end")
 bpy.context.scene.frame_start = {start_frame}
-bpy.context.scene.frame_end = {end_frame or bpy.context.scene.frame_end}
+bpy.context.scene.frame_end = {end_frame} or bpy.context.scene.frame_end
 
 # Configure render settings
 bpy.context.scene.render.image_settings.file_format = '{output_extension}'
 bpy.context.scene.render.filepath = '{output_base}'
-print(f'Render file path: {bpy.context.scene.render.filepath}')
 
 bpy.context.scene.render.resolution_x = 1920
 bpy.context.scene.render.resolution_y = 1080
