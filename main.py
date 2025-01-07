@@ -149,9 +149,9 @@ print("Animation render completed.")
         raise HTTPException(status_code=500, detail="Render failed")
 
     # Handle potential output file patterns
-    logger.debug(f"Looking for output files with base:{output_name} >>> {Path(output_name).stem}")
+    logger.debug(f"Looking for output files with base:{output_extension} {OUTPUT_DIR} {output_name} >>> {Path(output_name).stem}")
     if output_extension in {"MP4", "AVI",'mp4'}:
-        rendered_file = list(OUTPUT_DIR.glob(f"{Path(output_name).stem}-*.{output_extension.lower()}"))
+        rendered_file = list(OUTPUT_DIR.glob(f"{Path(output_name).stem}*.{output_extension.lower()}"))
     else:
         rendered_file = list(OUTPUT_DIR.glob(f"{Path(output_name).stem}*.{output_extension.lower()}"))
 
@@ -166,7 +166,7 @@ print("Animation render completed.")
     # Return the rendered file
     return FileResponse(
         path=final_output,
-        media_type=f"video/{output_extension.lower()}" if output_extension in {"MP4", "AVI"} else f"image/{output_extension.lower()}",
+        media_type=f"video/{output_extension.lower()}" if output_extension in {"MP4", "AVI",'mp4'} else f"image/{output_extension.lower()}",
         filename=output_name,
     )
 
