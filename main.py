@@ -9,7 +9,7 @@ app = FastAPI()
 
 # Set up logging
 logger = logging.getLogger("BlenderRenderer")
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 # Create a formatter
 formatter = logging.Formatter("%(asctime)s - %(message)s")
