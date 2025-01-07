@@ -52,15 +52,20 @@ mkdir -p /app/blender /app/uploads /app/output
 MODEL_URL="https://www.dropbox.com/scl/fi/71cm0ehliqk3qapux0fte/Copy-of-ALL-3D_INTERIOR_SCENE-COLECTION120-FNL2CLEAN7-FNL-BAKING_SCENE-CHARR6_LIPSC13FIX2.blend?rlkey=5q9xblrrlxpmpjo17f5fj5yyu&st=xu75gqh8&dl=1"
 MODEL_PATH="/app/blender/1.blend"
 
-echo "Downloading model file..."
-curl -sSL $MODEL_URL -o $MODEL_PATH
 
-if [ -f "$MODEL_PATH" ]; then
-    echo "Model downloaded and saved as $MODEL_PATH"
+if [ ! -f "$MODEL_PATH" ]; then
+    echo "Downloading model file..."
+    curl -sSL $MODEL_URL -o $MODEL_PATH
+    if [ -f "$MODEL_PATH" ]; then
+        echo "Model downloaded and saved as $MODEL_PATH"
+    else
+        echo "Failed to download the model file."
+        exit 1
+    fi
 else
-    echo "Failed to download the model file."
-    exit 1
+    echo "Model already exists at $MODEL_PATH. Skipping download."
 fi
+
 
 # Install Python dependencies
 if [ -f "requirements.txt" ]; then
