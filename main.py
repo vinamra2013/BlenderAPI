@@ -60,7 +60,8 @@ async def render_animation(
 
     # Create a temporary Python script for Blender
     script_content = f"""
-import bpy re
+import bpy 
+import re
 
 # Set up the GPU for rendering
 scene = bpy.context.scene
