@@ -12,8 +12,8 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
 logger = logging.getLogger("BlenderRenderer")
 
 # Define paths
-UPLOAD_DIR = Path("/data/uploads")
-OUTPUT_DIR = Path("/data/outputs")
+UPLOAD_DIR = Path("/app/uploads")
+OUTPUT_DIR = Path("/app/outputs")
 
 # Ensure directories exist
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
@@ -29,7 +29,7 @@ async def render_animation(
     logger.info("Starting animation render process with preloaded Blender file...")
 
     # Define paths and validate extensions
-    blend_path = Path("/data/blender") / file_name
+    blend_path = Path("/app/blender") / file_name
     logger.debug(f"Blend file path set to: {blend_path}")
 
     output_extension = Path(output_name).suffix.lstrip(".").upper()
@@ -140,7 +140,7 @@ async def render_image_preloaded(
     logger.info("Starting image render process with preloaded Blender file...")
 
     # Define paths and validate extensions
-    blend_path = Path("/data/blender") / file_name
+    blend_path = Path("/app/blender") / file_name
     output_extension = Path(output_name).suffix.lstrip(".").upper()
     valid_formats = {"PNG", "JPEG", "TIFF", "BMP", "OPEN_EXR", "HDR", "MP4", "AVI"}
     if output_extension not in valid_formats:
