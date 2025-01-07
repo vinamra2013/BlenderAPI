@@ -62,6 +62,30 @@ async def render_animation(
     script_content = f"""
 import bpy
 
+# Set up the GPU for rendering
+scene = bpy.context.scene
+scene.cycles.device = 'GPU'
+prefs = bpy.context.preferences
+prefs.addons['cycles'].preferences.get_devices()
+cprefs = prefs.addons['cycles'].preferences
+
+print(cprefs)
+
+# Attempt to set GPU device types if available
+for compute_device_type in ('CUDA', 'OPENCL', 'NONE'):
+    try:
+        cprefs.compute_device_type = compute_device_type
+        print('Device found:', compute_device_type)
+        break
+    except TypeError:
+        pass
+
+# Enable all CPU and GPU devices
+for device in cprefs.devices:
+    if not re.match('intel', device.name, re.I):
+        print('Activating:', device)
+        device.use = True
+        
 # Set render frame range
 print(f"Start Frame: {start_frame}, End Frame: {end_frame} or bpy.context.scene.frame_end")
 bpy.context.scene.frame_start = {start_frame}
