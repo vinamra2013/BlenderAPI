@@ -15,7 +15,7 @@ fi
 
 # Clone or pull the repository
 PROJECT_DIR="/app"
-REPO_URL="https://your-git-repository-url.git"  # Replace with your Git repository URL
+REPO_URL="https://github.com/vinamra2013/BlenderAPI.git"  # Replace with your Git repository URL
 
 if [ -d "$PROJECT_DIR/.git" ]; then
     echo "Pulling latest changes from repository..."
