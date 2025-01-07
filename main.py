@@ -8,8 +8,23 @@ import logging
 app = FastAPI()
 
 # Set up logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
 logger = logging.getLogger("BlenderRenderer")
+logger.setLevel(logging.INFO)
+
+# Create a formatter
+formatter = logging.Formatter("%(asctime)s - %(message)s")
+
+# Create a stream handler for stdout
+stream_handler = logging.StreamHandler()
+stream_handler.setFormatter(formatter)
+
+# Create a file handler to log to a file
+file_handler = logging.FileHandler("/app/logfile.log")
+file_handler.setFormatter(formatter)
+
+# Add both handlers to the logger
+logger.addHandler(stream_handler)
+logger.addHandler(file_handler)
 
 # Define paths
 UPLOAD_DIR = Path("/app/uploads")
@@ -134,8 +149,8 @@ print("Animation render completed.")
         raise HTTPException(status_code=500, detail="Render failed")
 
     # Handle potential output file patterns
-    logger.debug(f"Looking for output files with base: {Path(output_name).stem}")
-    if output_extension in {"MP4", "AVI"}:
+    logger.debug(f"Looking for output files with base:{output_name} >>> {Path(output_name).stem}")
+    if output_extension in {"MP4", "AVI",'mp4'}:
         rendered_file = list(OUTPUT_DIR.glob(f"{Path(output_name).stem}-*.{output_extension.lower()}"))
     else:
         rendered_file = list(OUTPUT_DIR.glob(f"{Path(output_name).stem}*.{output_extension.lower()}"))
