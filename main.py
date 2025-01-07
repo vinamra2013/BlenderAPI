@@ -93,7 +93,7 @@ bpy.context.scene.frame_start = {start_frame}
 bpy.context.scene.frame_end = {end_frame} or bpy.context.scene.frame_end
 
 # Configure render settings
-bpy.context.scene.render.filepath = '{output_base}'
+bpy.context.scene.render.filepath = '{output_base}.mp4'
 
 bpy.context.scene.render.image_settings.file_format = 'FFMPEG'
 bpy.context.scene.render.ffmpeg.format = 'MPEG4'

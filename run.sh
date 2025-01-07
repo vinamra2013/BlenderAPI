@@ -45,7 +45,7 @@ fi
 
 # Create necessary directories
 echo "Creating necessary directories..."
-mkdir -p /app/blender /app/uploads /app/output
+mkdir -p /app/blender /app/uploads /app/outputs
 
 # Download the .blend model file
 MODEL_URL="https://www.dropbox.com/scl/fi/71cm0ehliqk3qapux0fte/Copy-of-ALL-3D_INTERIOR_SCENE-COLECTION120-FNL2CLEAN7-FNL-BAKING_SCENE-CHARR6_LIPSC13FIX2.blend?rlkey=5q9xblrrlxpmpjo17f5fj5yyu&st=xu75gqh8&dl=1"
