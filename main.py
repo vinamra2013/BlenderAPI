@@ -60,7 +60,7 @@ async def render_animation(
 
     # Create a temporary Python script for Blender
     script_content = f"""
-import bpy
+import bpy re
 
 # Set up the GPU for rendering
 scene = bpy.context.scene
@@ -85,7 +85,7 @@ for device in cprefs.devices:
     if not re.match('intel', device.name, re.I):
         print('Activating:', device)
         device.use = True
-        
+
 # Set render frame range
 print(f"Start Frame: {start_frame}, End Frame: {end_frame} or bpy.context.scene.frame_end")
 bpy.context.scene.frame_start = {start_frame}
