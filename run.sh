@@ -16,12 +16,11 @@ echo "Updating and installing required packages..."
 
 apt update -y
 # !apt upgrade -y
-apt-get install curl libxi6 libgconf-2-4 -y
-apt install libfontconfig1 libxrender1 -y
-apt install libboost-all-dev -y
-apt install libgl1-mesa-dev -y
-apt install libglu1-mesa libsm-dev libxkbcommon-x11-dev -y
-apt update -y
+apt update -y && apt-get install -y \
+    curl libxi6 libgconf-2-4 \
+    libfontconfig1 libxrender1 \
+    libboost-all-dev libgl1-mesa-dev \
+    libglu1-mesa libsm-dev libxkbcommon-x11-dev
 # !apt upgrade -y
 
 
